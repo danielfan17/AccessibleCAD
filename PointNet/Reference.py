@@ -39,6 +39,7 @@ tf.random.set_seed(1234)
 showmesh = 0
 showcloud = 0 # is blocking
 plotresults = 0 # is blocking
+epochnum = 2
 
 """
 ## Load dataset
@@ -262,7 +263,7 @@ model.compile(
     metrics=["sparse_categorical_accuracy"],
 )
 
-model.fit(train_dataset, epochs=20, validation_data=test_dataset)
+model.fit(train_dataset, epochs=epochnum, validation_data=test_dataset)
 
 """
 ## Visualize predictions
