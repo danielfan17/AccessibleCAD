@@ -16,7 +16,31 @@ NUM_POINTS = 2048 	# number of points to sample from mesh
 
 MODELNAME = "ModelNet4"
 CADPATH = "data/ModelNet4/chair/test/chair_0891.off"
-#### 1. Load Model
+
+showMesh = 0
+
+#### 1. Load CAD to infer
+
+# initialize test_points vector
+test_points = []
+
+# load file as mesh
+mesh = trimesh.load(CADPATH)
+
+# option to show mesh
+if showMesh == 1: 
+    mesh.show()
+
+# sample point cloud points based on mesh
+mesh_sampled = mesh.sample(NUM_POINTS)
+
+# append to test_points vector
+test_points.append(mesh_sampled)
+
+# convert to array
+test_points = np.array(test_points)
+
+#### 2. Load Model
 
 # load model
 model = PointNet.get_model(name = "PointNetModel", num_classes = NUM_CLASSES)
@@ -28,14 +52,7 @@ model.compile(loss='sparse_categorical_crossentropy',
 # Load the state of the model
 model.load_weights('models/' + MODELNAME + "_weights.index")
 
-#### 2. Load CAD to infer
-test_points = []
-test_points.append(trimesh.load(CADPATH).sample(NUM_POINTS))
-
-test_points = np.array(test_points)
-
 #### 3. Make prediction
-print(test_points)
 prediction = model.predict(test_points)
 
 print(prediction)
