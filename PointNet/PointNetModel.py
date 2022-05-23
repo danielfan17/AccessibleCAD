@@ -144,7 +144,7 @@ class PointNet(keras.Model):
 
     	# 20th layer set
 		self.drop20 = layers.Dropout(0.3)
-		self.out20 = layers.Dense(num_classes, activation="softmax")
+		self.out20 = layers.Dense(num_classes, activation="sigmoid")
 
 	def call(self, inputs):
 

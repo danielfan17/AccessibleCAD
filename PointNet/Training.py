@@ -12,6 +12,7 @@ from tensorflow.keras import layers
 from tensorflow.keras import regularizers
 from matplotlib import pyplot as plt
 from PointNetModel import PointNet
+from sklearn.metrics import classification_report
 
 tf.random.set_seed(1234)
 
@@ -28,9 +29,6 @@ BATCH_SIZE = 32		# batch size
 EPOCH_NUM = 2		# number of epochs to train on
 
 MODELNAME = "ModelNet4"
-
-##### 1. Download data
-
 DATA_DIR = "data/ModelNet4"
 
 ##### 2. Visualize data
@@ -98,6 +96,7 @@ def parse_dataset(num_points=2048):
 train_points, test_points, train_labels, test_labels, CLASS_MAP = parse_dataset(
     NUM_POINTS
 )
+
 ##### 5. Shuffle and augment training set
 
 def augment(points, label):
@@ -128,11 +127,61 @@ model.compile(
     metrics=["sparse_categorical_accuracy"],
 )
 
-model.fit(train_dataset, epochs=EPOCH_NUM, validation_data=test_dataset)
+H = model.fit(train_dataset, epochs=EPOCH_NUM, validation_data=test_dataset)
 
 model.summary()
 
 ##### 8. Save Model
 
-# serialize model to JSON
+# save model weights
 model.save_weights('models/' + MODELNAME + "_weights")
+
+##### 9. View Results
+
+predictions = tf.math.argmax(model.predict(test_dataset, batch_size=BATCH_SIZE), -1)
+
+report = classification_report(test_labels, predictions, target_names= list(CLASS_MAP.values()))
+print(report)
+
+# determine the number of epochs and then construct the plot title
+N = np.arange(0, EPOCH_NUM)
+title = "Training Loss and Accuracy"
+# plot the training loss and accuracy
+plt.style.use("ggplot")
+plt.figure()
+plt.plot(N, H.history["loss"], label="train_loss")
+plt.plot(N, H.history["val_loss"], label="val_loss")
+plt.plot(N, H.history["sparse_categorical_accuracy"], label="train_accuracy")
+plt.plot(N, H.history["val_sparse_categorical_accuracy"], label="val_accuracy")
+plt.title(title)
+plt.xlabel("Epoch #")
+plt.ylabel("Loss/Accuracy")
+plt.legend()
+plt.show()
+#plt.savefig(args["plot"])
+
+# data = test_dataset.take(1)
+
+# points, labels = list(data)[0]
+# points = points[:8, ...]
+# labels = labels[:8, ...]
+
+# # run test data through model
+# preds = model.predict(points)
+# preds = tf.math.argmax(preds, -1)
+
+# points = points.numpy()
+
+# if plotresults:
+#     # plot points with predicted class and label
+#     fig = plt.figure(figsize=(15, 10))
+#     for i in range(8):
+#         ax = fig.add_subplot(2, 4, i + 1, projection="3d")
+#         ax.scatter(points[i, :, 0], points[i, :, 1], points[i, :, 2])
+#         ax.set_title(
+#          "pred: {:}, label: {:}".format(
+#                 CLASS_MAP[preds[i].numpy()], CLASS_MAP[labels.numpy()[i]]
+#          )
+#         )
+#         ax.set_axis_off()
+#     plt.show()
