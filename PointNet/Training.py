@@ -26,7 +26,7 @@ showPointCloud = 0  # whether to show point cloud, code is blocking
 NUM_POINTS = 2048 	# number of points to sample from mesh
 NUM_CLASSES = 4	# number of classes
 BATCH_SIZE = 32		# batch size
-EPOCH_NUM = 5		# number of epochs to train on
+EPOCH_NUM = 2		# number of epochs to train on
 
 MODELNAME = "ModelNet4"
 DATA_DIR = "data/ModelNet4"
@@ -160,8 +160,9 @@ model.save_weights('models/' + MODELNAME + "_weights")
 
 ##### 9. View Results
 
-predictions = tf.math.argmax(model.predict(test_dataset, batch_size=BATCH_SIZE), -1)
-
+predictions = tf.math.argmax(model.predict(test_points, batch_size=BATCH_SIZE), -1)
+print(predictions)
+print(test_labels)
 report = classification_report(test_labels, predictions, target_names= list(CLASS_MAP.values()))
 print(report)
 
