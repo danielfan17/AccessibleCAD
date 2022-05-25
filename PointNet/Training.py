@@ -15,6 +15,17 @@ from matplotlib import pyplot as plt
 from PointNetModel import PointNet
 from sklearn.metrics import classification_report
 
+##### Use command line to pass in hyperparameters #####
+import argparse
+parser = argparse.ArgumentParser()
+parser.add_argument("-nc", "--numclasses", help="Number of Classes", default=4, type=int)
+parser.add_argument("-lr", "--learningrate", help="Learning Rate", default=0.001, type=float)
+parser.add_argument("-ep", "--epoch", help="Number of Epochs", default=2, type=int)
+
+args = parser.parse_args()
+print("nc {} lr {} ep {}".format(args.numclasses, args.learningrate, args.epoch))
+#######################################################
+
 tf.random.set_seed(1234)
 
 ##### ADJUST BEFORE RUNNING #####
@@ -25,12 +36,13 @@ showPointCloud = 0  # whether to show point cloud, code is blocking
 
 # sampling options
 NUM_POINTS = 2048 	# number of points to sample from mesh
-NUM_CLASSES = 4	# number of classes
 BATCH_SIZE = 32		# batch size
-EPOCH_NUM = 2		# number of epochs to train on
+EPOCH_NUM = args.epoch  # number of epochs to train on
+LEARNING_RATE = args.learningrate
 
-MODELNAME = "ModelNet4"
-DATA_DIR = "data/ModelNet4"
+NUM_CLASSES = args.numclasses        # number of classes
+MODELNAME = "ModelNet" + str(NUM_CLASSES)
+DATA_DIR = "data/ModelNet" + str(NUM_CLASSES)
 
 ##### 2. Visualize data
 
@@ -146,7 +158,7 @@ model = PointNet(name = "PointNetModel", num_classes = NUM_CLASSES)
 
 model.compile(
     loss="sparse_categorical_crossentropy",
-    optimizer=keras.optimizers.Adam(learning_rate=0.001),
+    optimizer=keras.optimizers.Adam(learning_rate=LEARNING_RATE),
     metrics=["sparse_categorical_accuracy"],
 )
 
