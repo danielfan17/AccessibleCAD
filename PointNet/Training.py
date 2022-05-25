@@ -98,6 +98,7 @@ train_points, test_points, train_labels, test_labels, CLASS_MAP = parse_dataset(
 )
 
 ##### 5a. Normalize datasets
+print("Normalizing points for each model")
 
 def normalize(points):
 
@@ -115,6 +116,8 @@ for index in range(len(train_points)):
 for index in range(len(test_points)):
     
     test_points[index] = normalize(test_points[index])
+
+print("Shuffling model points")
 
 ##### 5b. Shuffle and augment training set
 
