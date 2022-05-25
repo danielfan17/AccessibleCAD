@@ -19,7 +19,7 @@ MODELNAME = "ModelNet4"
 CADPATHDEFAULT = "data/Test/OversizedArmchair.stl"
 DATA_DIR = "data/ModelNet4"
 
-showMesh = 0
+showMesh = 1
 showPointCloud = 1
 
 
@@ -66,7 +66,31 @@ class_map = create_class_map()
 test_points = []
 
 # load file as mesh
-mesh = trimesh.load(CADPATH)
+mesh = trimesh.load(CADPATH, force = 'mesh')
+mesh.merge_vertices(merge_tex=True, merge_norm=True)
+
+
+
+
+# def as_mesh(scene_or_mesh):
+#     """
+#     Convert a possible scene to a mesh.
+
+#     If conversion occurs, the returned mesh has only vertex and face data.
+#     """
+#     if isinstance(scene_or_mesh, trimesh.Scene):
+#         if len(scene_or_mesh.geometry) == 0:
+#             mesh = None  # empty scene
+#         else:
+#             # we lose texture information here
+#             mesh = trimesh.util.concatenate(
+#                 tuple(trimesh.Trimesh(vertices=g.vertices, faces=g.faces)
+#                     for g in scene_or_mesh.geometry.values()))
+#     else:
+#         assert(isinstance(mesh, trimesh.Trimesh))
+#         mesh = scene_or_mesh
+#     return mesh
+# mesh = as_mesh(mesh)
 
 # option to show mesh
 if showMesh == 1: 
@@ -106,6 +130,8 @@ if showPointCloud:
     ax.scatter(mesh_sampled[:, 0], mesh_sampled[:, 1], mesh_sampled[:,  2])
     ax.set_axis_off()
     plt.show()
+
+
 
 # data = test_dataset.take(1)
 

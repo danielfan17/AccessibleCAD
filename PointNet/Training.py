@@ -26,14 +26,14 @@ showPointCloud = 0  # whether to show point cloud, code is blocking
 NUM_POINTS = 2048 	# number of points to sample from mesh
 NUM_CLASSES = 4	# number of classes
 BATCH_SIZE = 32		# batch size
-EPOCH_NUM = 2		# number of epochs to train on
+EPOCH_NUM = 5		# number of epochs to train on
 
 MODELNAME = "ModelNet4"
 DATA_DIR = "data/ModelNet4"
 
 ##### 2. Visualize data
 
-mesh = trimesh.load(os.path.join(DATA_DIR, "chair/train/chair_0001.off"))
+mesh = trimesh.load(os.path.join(DATA_DIR, "chair/train/chair_0001.off"), force = 'mesh')
 
 if showMesh == 1: 
     mesh.show()
@@ -97,7 +97,26 @@ train_points, test_points, train_labels, test_labels, CLASS_MAP = parse_dataset(
     NUM_POINTS
 )
 
-##### 5. Shuffle and augment training set
+##### 5a. Normalize datasets
+
+def normalize(points):
+
+    norm_points = points - np.mean(points, axis = 0)
+    norm_points /= np.max(np.linalg.norm(points, axis = 1))
+
+    return norm_points
+
+# normalize train points
+for index in range(len(train_points)):
+
+    train_points[index] = normalize(train_points[index])
+
+# normalize test points
+for index in range(len(test_points)):
+    
+    test_points[index] = normalize(test_points[index])
+
+##### 5b. Shuffle and augment training set
 
 def augment(points, label):
     # jitter points
