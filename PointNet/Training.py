@@ -168,26 +168,39 @@ print(report)
 
 ##### 10. Output result
 
+# output report to csv
 df = pd.DataFrame(report).transpose()
-df.to_csv("results/" + MODELNAME + ".csv")
+df.to_csv("results/" + MODELNAME + "_classAccuracy.csv")
 
-# determine the number of epochs and then construct the plot title
+# determine the number of epochs
 N = np.arange(0, EPOCH_NUM)
+loss = H.history["loss"]
+val_loss = H.history["val_loss"]
+accuracy = H.history["sparse_categorical_accuracy"]
+val_accuracy = H.history["val_sparse_categorical_accuracy"]
+
+# output loss and accuracy history
+df = pd.DataFrame({'epoch': N,
+    'loss': loss,
+    'val_loss': val_loss,
+    'accuracy': accuracy,
+    'val_accuracy': val_accuracy})
+df.to_csv("results/" + MODELNAME + "_history.csv")
 
 plt.rcParams["figure.figsize"] = (10,4)
 
 plt.subplot(1, 2, 1)
 title = "Training Loss"
-plt.plot(N, H.history["loss"], label="train_loss")
-plt.plot(N, H.history["val_loss"], label="val_loss")
+plt.plot(N, loss, label="train_loss")
+plt.plot(N, val_loss, label="val_loss")
 plt.title(title)
 plt.xlabel("Epoch #")
 plt.legend()
 
 plt.subplot(1, 2, 2)
 title = "Training Accuracy"
-plt.plot(N, H.history["sparse_categorical_accuracy"], label="train_accuracy")
-plt.plot(N, H.history["val_sparse_categorical_accuracy"], label="val_accuracy")
+plt.plot(N, accuracy, label="train_accuracy")
+plt.plot(N, val_accuracy, label="val_accuracy")
 plt.title(title)
 plt.xlabel("Epoch #")
 plt.legend()
