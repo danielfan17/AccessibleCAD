@@ -6,6 +6,7 @@ import os
 import glob
 import trimesh
 import numpy as np
+import pandas as pd
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
@@ -161,25 +162,37 @@ model.save_weights('models/' + MODELNAME + "_weights")
 ##### 9. View Results
 
 predictions = tf.math.argmax(model.predict(test_points, batch_size=BATCH_SIZE), -1)
-print(predictions)
-print(test_labels)
-report = classification_report(test_labels, predictions, target_names= list(CLASS_MAP.values()))
+report = classification_report(test_labels, predictions, target_names= list(CLASS_MAP.values()), output_dict = True)
+
 print(report)
+
+##### 10. Output result
+
+df = pd.DataFrame(report).transpose()
+df.to_csv("results/" + MODELNAME + ".csv")
 
 # determine the number of epochs and then construct the plot title
 N = np.arange(0, EPOCH_NUM)
-title = "Training Loss and Accuracy"
-# plot the training loss and accuracy
-plt.style.use("ggplot")
-plt.figure()
+
+plt.rcParams["figure.figsize"] = (10,4)
+
+plt.subplot(1, 2, 1)
+title = "Training Loss"
 plt.plot(N, H.history["loss"], label="train_loss")
 plt.plot(N, H.history["val_loss"], label="val_loss")
+plt.title(title)
+plt.xlabel("Epoch #")
+plt.legend()
+
+plt.subplot(1, 2, 2)
+title = "Training Accuracy"
 plt.plot(N, H.history["sparse_categorical_accuracy"], label="train_accuracy")
 plt.plot(N, H.history["val_sparse_categorical_accuracy"], label="val_accuracy")
 plt.title(title)
 plt.xlabel("Epoch #")
-plt.ylabel("Loss/Accuracy")
 plt.legend()
+
+plt.savefig('results/' + MODELNAME + ".png")
 plt.show()
 #plt.savefig(args["plot"])
 
