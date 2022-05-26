@@ -72,7 +72,8 @@ def parse_dataset(num_points=2048):
     test_labels = []
     class_map = {}		# list of folder names with IDs
 
-    folders = glob.glob(os.path.join(DATA_DIR, "[!README]*"))
+    folders = glob.glob(DATA_DIR + "/*")
+    folders = [f for f in folders if not os.path.isfile(f)]
 
     # for folders in class
     for i, folder in enumerate(folders):
@@ -169,15 +170,16 @@ model.summary()
 ##### 8. Save Model
 
 # save model weights
-model.save_weights('models/' + MODELNAME + "_weights")
+#model.save_weights('models/' + MODELNAME + "_weights")
+
+model.save_weights('models/' + MODELNAME + ".h5")
+#tf.keras.models.save_model(model, 'models/' + MODELNAME)
 
 ##### 9. View Results
 
 predictions = tf.math.argmax(model.predict(test_points, batch_size=BATCH_SIZE), -1)
 report = classification_report(test_labels, predictions, target_names= list(CLASS_MAP.values()), output_dict = True)
-
 print(report)
-
 ##### 10. Output result
 
 # output report to csv

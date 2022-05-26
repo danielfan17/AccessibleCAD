@@ -1,2 +1,2 @@
-model_checkpoint_path: "ModelNet4_weights"
-all_model_checkpoint_paths: "ModelNet4_weights"
+model_checkpoint_path: "ModelNet4"
+all_model_checkpoint_paths: "ModelNet4"

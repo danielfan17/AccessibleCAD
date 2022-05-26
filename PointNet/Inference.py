@@ -3,6 +3,7 @@ import glob
 import trimesh
 import argparse
 import numpy as np
+import pandas as pd
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
@@ -15,12 +16,12 @@ from PointNetModel import PointNet
 NUM_CLASSES = 4	# number of classes
 NUM_POINTS = 2048 	# number of points to sample from mesh
 
-MODELNAME = "ModelNet4"
-CADPATHDEFAULT = "data/Test/OversizedArmchair.stl"
-DATA_DIR = "data/ModelNet4"
+MODELNAME = "ModelNet4"    # name of model to input
+CADPATHDEFAULT = "data/Test/OversizedArmchair.stl" # default model 
+DATA_DIR = "data/ModelNet4" # directory of training set to get classes from   
 
-showMesh = 1
-showPointCloud = 1
+showMesh = 0
+showPointCloud = 0
 
 
 #### 0. Parse script argument
@@ -69,29 +70,6 @@ test_points = []
 mesh = trimesh.load(CADPATH, force = 'mesh')
 mesh.merge_vertices(merge_tex=True, merge_norm=True)
 
-
-
-
-# def as_mesh(scene_or_mesh):
-#     """
-#     Convert a possible scene to a mesh.
-
-#     If conversion occurs, the returned mesh has only vertex and face data.
-#     """
-#     if isinstance(scene_or_mesh, trimesh.Scene):
-#         if len(scene_or_mesh.geometry) == 0:
-#             mesh = None  # empty scene
-#         else:
-#             # we lose texture information here
-#             mesh = trimesh.util.concatenate(
-#                 tuple(trimesh.Trimesh(vertices=g.vertices, faces=g.faces)
-#                     for g in scene_or_mesh.geometry.values()))
-#     else:
-#         assert(isinstance(mesh, trimesh.Trimesh))
-#         mesh = scene_or_mesh
-#     return mesh
-# mesh = as_mesh(mesh)
-
 # option to show mesh
 if showMesh == 1: 
     mesh.show()
@@ -111,17 +89,43 @@ test_points = np.array(test_points)
 model = PointNet.get_model(name = "PointNetModel", num_classes = NUM_CLASSES)
 
 # compile model
-model.compile(loss='sparse_categorical_crossentropy',
-                  optimizer=keras.optimizers.RMSprop())
+model.compile(
+    loss="sparse_categorical_crossentropy",
+    optimizer=keras.optimizers.Adam(learning_rate=0.001),
+    metrics=["sparse_categorical_accuracy"],
+)
 
-# Load the state of the model
-model.load_weights('models/' + MODELNAME + "_weights.index")
+# build model with sample
+model.train_on_batch(test_points, np.array([1]))
+model.load_weights('models/' + MODELNAME + ".h5")
+
+#### 2b. Normalize points
+def normalize(points):
+
+    norm_points = points - np.mean(points, axis = 0)
+    norm_points /= np.max(np.linalg.norm(points, axis = 1))
+
+    return norm_points
+
+# normalize train points
+for index in range(len(test_points)):
+
+    test_points[index] = normalize(test_points[index])
+
 
 #### 3. Make prediction
-prediction = model.predict(test_points)
+prediction = model.predict(test_points)[0]
 
-print(class_map)
-print(prediction)
+#### 4. Process Results
+# output loss and accuracy history
+df = pd.DataFrame({'class': class_map.values(),
+    'prediction': prediction})
+
+df = df.sort_values('prediction', ascending = False)
+
+print(df)
+# print(class_map)
+# print(prediction)
 
 # show pointcloud
 if showPointCloud:
