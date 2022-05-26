@@ -74,6 +74,7 @@ def parse_dataset(num_points=2048):
 
     folders = glob.glob(DATA_DIR + "/*")
     folders = [f for f in folders if not os.path.isfile(f)]
+    folders = sorted(folders)
 
     NUM_CLASSES = len(folders)
 

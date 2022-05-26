@@ -15,12 +15,12 @@ from PointNetModel import PointNet
 
 NUM_POINTS = 2048 	# number of points to sample from mesh
 
-MODELNAME = "ModelNet4"    # name of model to input
-CADPATHDEFAULT = "data/Test/OversizedArmchair.stl" # default model 
-DATA_DIR = "data/ModelNet4" # directory of training set to get classes from   
+MODELNAME = "ModelNet10"    # name of model to input
+CADPATHDEFAULT = "data/ModelNet10/bathtub/train/bathtub_0010.off" # default model 
+DATA_DIR = "data/ModelNet10" # directory of training set to get classes from   
 
 showMesh = 0
-showPointCloud = 0
+showPointCloud = 1
 
 
 #### 0. Parse script argument
@@ -46,6 +46,7 @@ def create_class_map():
 
     folders = glob.glob(DATA_DIR + "/*")
     folders = [f for f in folders if not os.path.isfile(f)]
+    folders = sorted(folders)
 
     NUM_CLASSES = len(folders)
 
@@ -99,7 +100,7 @@ model.compile(
 )
 
 # build model with sample
-model.train_on_batch(test_points, np.array([1]))
+model.train_on_batch(test_points, np.array([0]))
 model.load_weights('models/' + MODELNAME + ".h5")
 
 #### 2b. Normalize points
