@@ -18,12 +18,12 @@ from sklearn.metrics import classification_report
 ##### Use command line to pass in hyperparameters #####
 import argparse
 parser = argparse.ArgumentParser()
-parser.add_argument("-nc", "--numclasses", help="Number of Classes", default=4, type=int)
+#parser.add_argument("-nc", "--numclasses", help="Number of Classes", default=4, type=int)
 parser.add_argument("-lr", "--learningrate", help="Learning Rate", default=0.001, type=float)
 parser.add_argument("-ep", "--epoch", help="Number of Epochs", default=2, type=int)
 
 args = parser.parse_args()
-print("nc {} lr {} ep {}".format(args.numclasses, args.learningrate, args.epoch))
+print("lr {} ep {}".format(args.learningrate, args.epoch))
 #######################################################
 
 tf.random.set_seed(1234)
@@ -40,9 +40,9 @@ BATCH_SIZE = 32		# batch size
 EPOCH_NUM = args.epoch  # number of epochs to train on
 LEARNING_RATE = args.learningrate
 
-NUM_CLASSES = args.numclasses        # number of classes
-MODELNAME = "ModelNet" + str(NUM_CLASSES)
-DATA_DIR = "data/ModelNet" + str(NUM_CLASSES)
+#NUM_CLASSES = args.numclasses        # number of classes
+MODELNAME = "ModelNet4"
+DATA_DIR = "data/ModelNet4"
 
 ##### 2. Visualize data
 
@@ -75,6 +75,8 @@ def parse_dataset(num_points=2048):
     folders = glob.glob(DATA_DIR + "/*")
     folders = [f for f in folders if not os.path.isfile(f)]
 
+    NUM_CLASSES = len(folders)
+
     # for folders in class
     for i, folder in enumerate(folders):
 
@@ -104,12 +106,13 @@ def parse_dataset(num_points=2048):
         np.array(train_labels),
         np.array(test_labels),
         class_map,
+        NUM_CLASSES
     )
 
 # run parsing function
-train_points, test_points, train_labels, test_labels, CLASS_MAP = parse_dataset(
+train_points, test_points, train_labels, test_labels, CLASS_MAP, NUM_CLASSES = parse_dataset(
     NUM_POINTS
-)
+)   
 
 ##### 5a. Normalize datasets
 print("Normalizing points for each model")

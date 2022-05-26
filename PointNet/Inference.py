@@ -13,7 +13,6 @@ from PointNetModel import PointNet
 
 ##### ADJUST BEFORE RUNNING #####
 
-NUM_CLASSES = 4	# number of classes
 NUM_POINTS = 2048 	# number of points to sample from mesh
 
 MODELNAME = "ModelNet4"    # name of model to input
@@ -42,9 +41,13 @@ CADPATH = args.path
 
 #Generating class map
 def create_class_map():
+
     class_map = {}		# list of folder names with IDs
 
-    folders = glob.glob(os.path.join(DATA_DIR, "[!README]*"))
+    folders = glob.glob(DATA_DIR + "/*")
+    folders = [f for f in folders if not os.path.isfile(f)]
+
+    NUM_CLASSES = len(folders)
 
     # for folders in class
     for i, folder in enumerate(folders):
@@ -56,10 +59,10 @@ def create_class_map():
         class_map[i] = folder.split("/")[-1]
 
     # returns training points, training labels, and map of folder names (class) with ID
-    return class_map
+    return class_map, NUM_CLASSES
 #
 
-class_map = create_class_map()
+class_map, NUM_CLASSES = create_class_map()
 
 #### 1. Load CAD to infer
 
