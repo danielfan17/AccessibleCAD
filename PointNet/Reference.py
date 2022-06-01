@@ -35,7 +35,7 @@ from matplotlib import pyplot as plt
 
 tf.random.set_seed(1234)
 
-# control variables
+# Program Control Variables
 showmesh = 0
 showcloud = 0 # is blocking
 plotresults = 0 # is blocking
@@ -59,7 +59,7 @@ We can use the `trimesh` package to read and visualize the `.off` mesh files.
 """
 mesh = trimesh.load(os.path.join(DATA_DIR, "chair/train/chair_0001.off"))
 
-if showmesh == 1: 
+if showmesh == 1:
     mesh.show()
 
 """

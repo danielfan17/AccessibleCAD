@@ -1,3 +1,7 @@
+"""
+Inference Script
+"""
+
 import os
 import glob
 import trimesh
@@ -16,12 +20,14 @@ from PointNetModel import PointNet
 NUM_POINTS = 2048 	# number of points to sample from mesh
 
 MODELNAME = "ModelNet10"    # name of model to input
-CADPATHDEFAULT = "data/ModelNet10/bathtub/train/bathtub_0010.off" # default model 
-DATA_DIR = "data/ModelNet10" # directory of training set to get classes from   
+CADPATHDEFAULT = "data/ModelNet10/bathtub/train/bathtub_0010.off" # default model
+DATA_DIR = "data/ModelNet10" # directory of training set to get classes from
 
+# Program Control Variables
 showMesh = 0
 showPointCloud = 1
 
+##### END ADJUST BEFORE RUNNING #####
 
 #### 0. Parse script argument
 
@@ -61,7 +67,6 @@ def create_class_map():
 
     # returns training points, training labels, and map of folder names (class) with ID
     return class_map, NUM_CLASSES
-#
 
 class_map, NUM_CLASSES = create_class_map()
 
@@ -75,7 +80,7 @@ mesh = trimesh.load(CADPATH, force = 'mesh')
 mesh.merge_vertices(merge_tex=True, merge_norm=True)
 
 # option to show mesh
-if showMesh == 1: 
+if showMesh == 1:
     mesh.show()
 
 # sample point cloud points based on mesh

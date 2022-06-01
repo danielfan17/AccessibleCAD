@@ -1,5 +1,5 @@
 """
-Training Scropt
+Training Script
 """
 
 import os
@@ -44,11 +44,13 @@ LEARNING_RATE = args.learningrate
 MODELNAME = "ModelNet4"
 DATA_DIR = "data/ModelNet4"
 
+##### END ADJUST BEFORE RUNNING #####
+
 ##### 2. Visualize data
 
 mesh = trimesh.load(os.path.join(DATA_DIR, "chair/train/chair_0001.off"), force = 'mesh')
 
-if showMesh == 1: 
+if showMesh == 1:
     mesh.show()
 
 # Convert to point cloud
@@ -113,7 +115,7 @@ def parse_dataset(num_points=2048):
 # run parsing function
 train_points, test_points, train_labels, test_labels, CLASS_MAP, NUM_CLASSES = parse_dataset(
     NUM_POINTS
-)   
+)
 
 ##### 5a. Normalize datasets
 print("Normalizing points for each model")
@@ -132,7 +134,7 @@ for index in range(len(train_points)):
 
 # normalize test points
 for index in range(len(test_points)):
-    
+
     test_points[index] = normalize(test_points[index])
 
 print("Shuffling model points")
