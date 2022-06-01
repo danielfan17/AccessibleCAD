@@ -9,30 +9,30 @@ Software/Tools Required:
 * Amazon AWS Virtual Machine: https://us-east-1.console.aws.amazon.com/
 * Google Drive (for storing large data files): https://drive.google.com/drive/u/0/folders/1KWI5aRVr6sju8_ugDs9BFzA4C1gfiTkU
 
-===============================================================================================
+=============================================================================
 
 Project Components:
 ![Alt text](accessiblecad_workflow.png)
 1. Code: 3 components
-    a. Data preprocessing scripts: (for preparing training data for Point-Net). Would take training data hosted outside of repo, make modifications, and export in location outside of repo, while git-ignoring the data. Recommendation to start working with a small data subset to develop workflow.
-    b. Point-Net scripts:
-        i. Script for training the model based on training set
-        ii. Script for testing the outputs on a dev set containing OpenSCAD point clouds.
-        iii. Script for classifying individual images
-    c. VS-Code extension: code incorporating user workflow into VS-Code, where users can make a model, output a .stl file, convert to point cloud, apply classification script, and provide class probabilities
+    - Data preprocessing scripts: (for preparing training data for Point-Net). Would take training data hosted outside of repo, make modifications, and export in location outside of repo, while git-ignoring the data. Recommendation to start working with a small data subset to develop workflow.
+    - Point-Net scripts:
+        * Script for training the model based on training set
+        * Script for testing the outputs on a dev set containing OpenSCAD point clouds.
+        * Script for classifying individual images
+    - VS-Code extension: code incorporating user workflow into VS-Code, where users can make a model, output a .stl file, convert to point cloud, apply classification script, and provide class probabilities
 2. Drive (or other cloud source): for storing large files, such as training and development datasets, models, etc.
-3. AWS virtual machine: will be used for high-computation tasks. Developers can ssh in, pull the latest updates from the repo, and run scripts.
+3. AWS virtual machine: will be used for high-computation tasks. Developers can ssh in, pull the latest updates from the repo, and run scripts
 
-===============================================================================================
+=============================================================================
 
 Installation and Set-Up:
 1. Clone repo: https://github.com/danielfan17/AccessibleCAD.git (recommend using virtual environment to run the code, either venv or conda)
-    b. Instructions for conda: https://sudhanva.me/install-tensorflow-on-apple-m1-pro-max/
+    - Instructions for conda: https://sudhanva.me/install-tensorflow-on-apple-m1-pro-max/
 2. Install required packages for PointNet, by one of the following:
-    a. Type "pip3 install -r requirements.txt"
-    b. Manually install glob, trimesh, numpy, tensorflow, matplotlib, h5py, pyglet
+    - Type "pip3 install -r requirements.txt"
+    - Manually install glob, trimesh, numpy, tensorflow, matplotlib, h5py, pyglet
 3. Test by running PointNet Reference locally with "python3 Reference.py"
-    a. Documentation for code: https://keras.io/examples/vision/pointnet/
+    - Documentation for code: https://keras.io/examples/vision/pointnet/
 
 Training: 
 1. Download data from Gdrive and place into “PointNet/data” folder
@@ -53,7 +53,7 @@ Editing Model:
 3. Adjust batch size and learning rate in “Inference.py”
 4. Adjust regularization factor in line 310 in “PointNetMode.py”
 
-===============================================================================================
+=============================================================================
 
 References/Documentation:
 * PointNet: https://keras.io/examples/vision/pointnet/
